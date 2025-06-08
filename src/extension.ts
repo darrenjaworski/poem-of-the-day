@@ -31,7 +31,7 @@ function createDeterministicRandom(seed: number) {
 	};
 }
 
-async function fetchPoem(context: vscode.ExtensionContext): Promise<{ title: string; author: string; body: string; error?: string }> {
+async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: boolean): Promise<{ title: string; author: string; body: string; error?: string }> {
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, pad with 0
@@ -39,16 +39,21 @@ async function fetchPoem(context: vscode.ExtensionContext): Promise<{ title: str
 	const currentDateString = `${year}${month}${day}`; // YYYYMMDD
 
 	const cacheKey = 'dailyPoemCache';
-	try {
-		const cachedItem = context.globalState.get<{ date: string; poem: { title: string; author: string; body: string; error?: undefined } }>(cacheKey);
 
-		if (cachedItem && cachedItem.date === currentDateString && cachedItem.poem && !cachedItem.poem.error) {
-			console.log('Daily Poetry: Serving poem from cache for date:', currentDateString);
-			return cachedItem.poem;
+	if (!isDevelopmentMode) {
+		try {
+			const cachedItem = context.globalState.get<{ date: string; poem: { title: string; author: string; body: string; error?: undefined } }>(cacheKey);
+
+			if (cachedItem && cachedItem.date === currentDateString && cachedItem.poem && !cachedItem.poem.error) {
+				console.log('Daily Poetry: Serving poem from cache for date:', currentDateString);
+				return cachedItem.poem;
+			}
+		} catch (e) {
+			console.error('Daily Poetry: Error reading from cache', e);
+			// Proceed to fetch if cache read fails
 		}
-	} catch (e) {
-		console.error('Daily Poetry: Error reading from cache', e);
-		// Proceed to fetch if cache read fails
+	} else {
+		console.log('Daily Poetry: Development mode - Bypassing cache read.');
 	}
 
 	console.log('Daily Poetry: Fetching new poem for date:', currentDateString);
@@ -117,9 +122,9 @@ async function fetchPoem(context: vscode.ExtensionContext): Promise<{ title: str
 
 		// 5. Format poem data
 		// First, join the lines from the API with a single newline character.
-		// Then, replace any literal '\\n' sequences (which might be present in the API data itself)
+		// Then, replace any literal '\\\\n' sequences (which might be present in the API data itself)
 		// with a single newline character to ensure correct rendering in <pre> tags.
-		const processedBody = randomPoem.lines.join('\n').replace('/\n', '').trim();
+		const processedBody = randomPoem.lines.join('\n').replace(/\\\\n/g, '\n').trim();
 
 		const fetchedPoem = {
 			title: randomPoem.title,
@@ -127,12 +132,16 @@ async function fetchPoem(context: vscode.ExtensionContext): Promise<{ title: str
 			body: processedBody // Use the processed body
 		};
 
-		// Store successfully fetched poem in cache
-		try {
-			await context.globalState.update(cacheKey, { date: currentDateString, poem: fetchedPoem });
-			console.log('Daily Poetry: Successfully cached poem for date:', currentDateString);
-		} catch (e) {
-			console.error('Daily Poetry: Error writing to cache', e);
+		// Store successfully fetched poem in cache only if not in development mode
+		if (!isDevelopmentMode) {
+			try {
+				await context.globalState.update(cacheKey, { date: currentDateString, poem: fetchedPoem });
+				console.log('Daily Poetry: Successfully cached poem for date:', currentDateString);
+			} catch (e) {
+				console.error('Daily Poetry: Error writing to cache', e);
+			}
+		} else {
+			console.log('Daily Poetry: Development mode - Bypassing cache write.');
 		}
 		return fetchedPoem;
 
@@ -146,6 +155,11 @@ async function fetchPoem(context: vscode.ExtensionContext): Promise<{ title: str
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "daily-poetry" is now active!');
+
+	const isDevelopmentMode = context.extensionMode === vscode.ExtensionMode.Development;
+	if (isDevelopmentMode) {
+		console.log('Daily Poetry: Running in Development Mode - Caching is disabled for this session.');
+	}
 
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 	statusBarItem.text = `$(symbol-string) P`;
@@ -171,66 +185,6 @@ export async function activate(context: vscode.ExtensionContext) {
 				{} // Webview options. We don't need any special options for now.
 			);
 
-			// Set the HTML content for the new panel
-			let htmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Poem</title>
-    <style>
-        body {
-            font-family: var(--vscode-font-family, sans-serif);
-            color: var(--vscode-editor-foreground);
-            background-color: var(--vscode-editor-background);
-            padding: 20px;
-            line-height: 1.6;
-        }
-        h1 {
-            color: var(--vscode-editor-foreground); /* Or a more specific heading color if available */
-            border-bottom: 1px solid var(--vscode-editorWidget-border, #ccc);
-            padding-bottom: 0.3em;
-        }
-        h2 {
-            color: var(--vscode-descriptionForeground, #777);
-            font-style: italic;
-            margin-top: 0.2em;
-            font-weight: normal;
-        }
-        pre {
-            white-space: pre-wrap;
-            background-color: var(--vscode-textBlockQuote-background, #f0f0f0);
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid var(--vscode-textBlockQuote-border, #ddd);
-            font-family: var(--vscode-editor-font-family, monospace); /* Use editor font for poem body */
-        }
-        .error {
-            color: var(--vscode-errorForeground);
-        }
-        p {
-            color: var(--vscode-foreground);
-        }
-    </style>
-</head>
-<body>`;
-
-			if (lastPoemData && !lastPoemData.error) {
-				htmlContent += `<h1>${lastPoemData.title}</h1>
-							   <h2>by ${lastPoemData.author}</h2>
-							   <pre>${lastPoemData.body}</pre>`;
-			} else if (lastPoemData && lastPoemData.error) {
-				htmlContent += `<h1 class="error">Error Fetching Poem</h1>
-							   <p class="error">${lastPoemData.error}</p>
-							   <h2>Default Poem:</h2>
-							   <h1>${defaultPoemForFallback.title}</h1>
-							   <h2>by ${defaultPoemForFallback.author}</h2>
-							   <pre>${defaultPoemForFallback.body}</pre>`;
-			} else {
-				// This case might occur if the command is somehow called before initial fetch completes
-				htmlContent += `<h1>Poem data not yet available</h1><p>Please wait a moment and try clicking the status bar icon again, or reload the window if the problem persists.</p>`;
-			}
-			htmlContent += '</body></html>';
 			currentPoemPanel.webview.html = getWebviewContent(); // Use a helper function for clarity
 
 			// Reset when the panel is closed
@@ -246,8 +200,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(showPoemCommand);
 
-	// Fetch initial poem, passing context for caching
-	lastPoemData = await fetchPoem(context); // Pass context
+	// Fetch initial poem, passing context for caching and development mode status
+	lastPoemData = await fetchPoem(context, isDevelopmentMode); // Pass context and dev mode status
 
 	if (lastPoemData.error) {
 		statusBarItem.tooltip = `Error: ${lastPoemData.error}\nClick to view default poem.`;
@@ -318,6 +272,8 @@ function getWebviewContent(): string {
 		// This case might occur if the command is somehow called before initial fetch completes
 		htmlContent += `<h1>Poem data not yet available</h1><p>Please wait a moment and try clicking the status bar icon again, or reload the window if the problem persists.</p>`;
 	}
+	htmlContent += `<hr><p style="text-align:center; font-size: 0.8em; color: var(--vscode-descriptionForeground);">Developed by @darrenjaworski and Copilot. ❤️</p>`;
+	htmlContent += `<p style="text-align:center; font-size: 0.75em; color: var(--vscode-descriptionForeground);">Poetry from PoetryDB.</p>`;
 	htmlContent += '</body></html>';
 	return htmlContent;
 }
