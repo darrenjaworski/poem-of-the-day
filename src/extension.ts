@@ -272,7 +272,7 @@ function getWebviewContent(): string {
 		// This case might occur if the command is somehow called before initial fetch completes
 		htmlContent += `<h1>Poem data not yet available</h1><p>Please wait a moment and try clicking the status bar icon again, or reload the window if the problem persists.</p>`;
 	}
-	htmlContent += `<hr><p style="text-align:center; font-size: 0.8em; color: var(--vscode-descriptionForeground);">Developed by @darrenjaworski and Copilot. ❤️</p>`;
+	htmlContent += `<hr><p style="text-align:center; font-size: 0.8em; color: var(--vscode-descriptionForeground);">Developed with ❤️ by @darrenjaworski and Copilot.</p>`;
 	htmlContent += `<p style="text-align:center; font-size: 0.75em; color: var(--vscode-descriptionForeground);">Poetry from PoetryDB.</p>`;
 	htmlContent += '</body></html>';
 	return htmlContent;
