@@ -3,6 +3,7 @@
   "displayName": "Poem of the Day",
   "description": "An extension to provide you with a daily dose of poetry while you're coding.",
   "version": "1.0.0",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/darrenjaworski/poem-of-the-day.git"
