@@ -162,7 +162,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
-	statusBarItem.text = `$(symbol-string) P`;
+	statusBarItem.text = `🪶`;
 	// statusBarItem.tooltip will be set after fetching
 	statusBarItem.show();
 	context.subscriptions.push(statusBarItem);
@@ -180,7 +180,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			// Otherwise, create a new panel
 			currentPoemPanel = vscode.window.createWebviewPanel(
 				'poemOfTheDay', // Identifies the type of the webview. Used internally
-				'Poem of the Day', // Title of the panel displayed to the user
+				'🪶 Poem of the Day', // Title of the panel displayed to the user
 				columnToShowIn || vscode.ViewColumn.One, // Editor column to show the new webview panel in.
 				{} // Webview options. We don't need any special options for now.
 			);
