@@ -16,10 +16,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "daily-poetry.helloWorld",
+        "command": "daily-poetry.showDailyPoem",
         "title": "Show Daily Poem"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Daily Poetry",
+      "properties": {
+        "dailyPoetry.openOnStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically open the Daily Poem webview when VS Code starts."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",

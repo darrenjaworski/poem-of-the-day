@@ -168,7 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(statusBarItem);
 
 	// Command to show the poem in a webview
-	let showPoemCommand = vscode.commands.registerCommand('daily-poetry.helloWorld', () => {
+	let showPoemCommand = vscode.commands.registerCommand('daily-poetry.showDailyPoem', () => {
 		const columnToShowIn = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
 			: vscode.ViewColumn.One;
@@ -207,10 +207,17 @@ export async function activate(context: vscode.ExtensionContext) {
 		statusBarItem.tooltip = `Error: ${lastPoemData.error}\nClick to view default poem.`;
 		console.error(`Daily Poetry Extension: ${lastPoemData.error}`);
 	} else {
-		statusBarItem.tooltip = `Title: ${lastPoemData.title}\nAuthor: ${lastPoemData.author}\n(Click to view full poem)`;
+		statusBarItem.tooltip = `${lastPoemData.title}\nBy: ${lastPoemData.author}\n(Click to view full poem)`;
 	}
-	statusBarItem.command = 'daily-poetry.helloWorld'; // Set command for status bar click
+	statusBarItem.command = 'daily-poetry.showDailyPoem'; // Set command for status bar click
 
+	// Check user setting for opening webview on startup
+	const config = vscode.workspace.getConfiguration('dailyPoetry');
+	const openOnStartup = config.get<boolean>('openOnStartup');
+
+	if (openOnStartup) {
+		vscode.commands.executeCommand('daily-poetry.showDailyPoem');
+	}
 }
 
 function getWebviewContent(): string {
@@ -259,7 +266,7 @@ function getWebviewContent(): string {
 
 	if (lastPoemData && !lastPoemData.error) {
 		htmlContent += `<h1>${lastPoemData.title}</h1>
-					   <h2>by ${lastPoemData.author}</h2>
+					   <h2>${lastPoemData.author}</h2>
 					   <pre>${lastPoemData.body}</pre>`;
 	} else if (lastPoemData && lastPoemData.error) {
 		htmlContent += `<h1 class="error">Error Fetching Poem</h1>
@@ -272,8 +279,9 @@ function getWebviewContent(): string {
 		// This case might occur if the command is somehow called before initial fetch completes
 		htmlContent += `<h1>Poem data not yet available</h1><p>Please wait a moment and try clicking the status bar icon again, or reload the window if the problem persists.</p>`;
 	}
-	htmlContent += `<hr><p style="text-align:center; font-size: 0.8em; color: var(--vscode-descriptionForeground);">Developed with ❤️ by @darrenjaworski and Copilot.</p>`;
-	htmlContent += `<p style="text-align:center; font-size: 0.75em; color: var(--vscode-descriptionForeground);">Poetry from PoetryDB.</p>`;
+	// htmlContent += `<hr>`; // Removed this line
+	htmlContent += `<p style="text-align:center; font-size: 0.8em; color: var(--vscode-descriptionForeground);">Developed with ❤️ by <a href="https://github.com/darrenjaworski" style="color: var(--vscode-textLink-foreground);">@darrenjaworski</a> and Copilot.</p>`;
+	htmlContent += `<p style="text-align:center; font-size: 0.75em; color: var(--vscode-descriptionForeground);">Poetry from <a href="https://poetrydb.org" style="color: var(--vscode-textLink-foreground);">PoetryDB</a>.</p>`;
 	htmlContent += '</body></html>';
 	return htmlContent;
 }
