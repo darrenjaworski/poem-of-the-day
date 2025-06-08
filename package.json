@@ -16,14 +16,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "poem-of-the-day.showPoemOfTheDAy",
+        "command": "poem-of-the-day.showPoemOfTheDay",
         "title": "Show Poem of the Day"
       }
     ],
     "configuration": {
       "title": "Poem of the Day",
       "properties": {
-        "dailyPoetry.openOnStartup": {
+        "poemOfTheDay.openOnStartup": {
           "type": "boolean",
           "default": false,
           "description": "Automatically open to the poem of the day when VS Code starts."

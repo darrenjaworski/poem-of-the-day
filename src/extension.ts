@@ -212,7 +212,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	statusBarItem.command = 'poem-of-the-day.showPoemOfTheDay'; // Set command for status bar click
 
 	// Check user setting for opening webview on startup
-	const config = vscode.workspace.getConfiguration('dailyPoetry');
+	const config = vscode.workspace.getConfiguration('poemOfTheDay');
 	const openOnStartup = config.get<boolean>('openOnStartup');
 
 	if (openOnStartup) {
