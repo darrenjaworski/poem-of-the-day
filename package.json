@@ -21,12 +21,12 @@
       }
     ],
     "configuration": {
-      "title": "Daily Poetry",
+      "title": "Poem of the Day",
       "properties": {
         "dailyPoetry.openOnStartup": {
           "type": "boolean",
           "default": false,
-          "description": "Automatically open the Daily Poem webview when VS Code starts."
+          "description": "Automatically open to the poem of the day when VS Code starts."
         }
       }
     }

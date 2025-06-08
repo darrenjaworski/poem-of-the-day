@@ -45,18 +45,18 @@ async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: bo
 			const cachedItem = context.globalState.get<{ date: string; poem: { title: string; author: string; body: string; error?: undefined } }>(cacheKey);
 
 			if (cachedItem && cachedItem.date === currentDateString && cachedItem.poem && !cachedItem.poem.error) {
-				console.log('Daily Poetry: Serving poem from cache for date:', currentDateString);
+				console.log('Poem of the Day: Serving poem from cache for date:', currentDateString);
 				return cachedItem.poem;
 			}
 		} catch (e) {
-			console.error('Daily Poetry: Error reading from cache', e);
+			console.error('Poem of the Day: Error reading from cache', e);
 			// Proceed to fetch if cache read fails
 		}
 	} else {
-		console.log('Daily Poetry: Development mode - Bypassing cache read.');
+		console.log('Poem of the Day: Development mode - Bypassing cache read.');
 	}
 
-	console.log('Daily Poetry: Fetching new poem for date:', currentDateString);
+	console.log('Poem of the Day: Fetching new poem for date:', currentDateString);
 
 	const getJSON = <T>(url: string): Promise<T> => {
 		return new Promise((resolve, reject) => {
@@ -136,17 +136,17 @@ async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: bo
 		if (!isDevelopmentMode) {
 			try {
 				await context.globalState.update(cacheKey, { date: currentDateString, poem: fetchedPoem });
-				console.log('Daily Poetry: Successfully cached poem for date:', currentDateString);
+				console.log('Poem of the Day: Successfully cached poem for date:', currentDateString);
 			} catch (e) {
-				console.error('Daily Poetry: Error writing to cache', e);
+				console.error('Poem of the Day: Error writing to cache', e);
 			}
 		} else {
-			console.log('Daily Poetry: Development mode - Bypassing cache write.');
+			console.log('Poem of the Day: Development mode - Bypassing cache write.');
 		}
 		return fetchedPoem;
 
 	} catch (e: any) {
-		console.error(`Daily Poetry: PoetryDB fetch error: ${e.message}`);
+		console.error(`Poem of the Day: PoetryDB fetch error: ${e.message}`);
 		// Do not update lastPoemData here directly, let activate handle it from the return
 		return { ...defaultPoemForFallback, error: `Failed to fetch or parse poem from PoetryDB: ${e.message}` };
 	}
@@ -158,7 +158,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const isDevelopmentMode = context.extensionMode === vscode.ExtensionMode.Development;
 	if (isDevelopmentMode) {
-		console.log('Daily Poetry: Running in Development Mode - Caching is disabled for this session.');
+		console.log('Poem of the Day: Running in Development Mode - Caching is disabled for this session.');
 	}
 
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
@@ -205,7 +205,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	if (lastPoemData.error) {
 		statusBarItem.tooltip = `Error: ${lastPoemData.error}\nClick to view default poem.`;
-		console.error(`Daily Poetry Extension: ${lastPoemData.error}`);
+		console.error(`Poem of the Day Extension: ${lastPoemData.error}`);
 	} else {
 		statusBarItem.tooltip = `${lastPoemData.title}\nBy: ${lastPoemData.author}\n(Click to view full poem)`;
 	}
@@ -226,7 +226,7 @@ function getWebviewContent(): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Poem</title>
+    <title>Poem of the Day</title>
     <style>
         body {
             font-family: var(--vscode-font-family, sans-serif);
