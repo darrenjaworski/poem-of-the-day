@@ -4,7 +4,7 @@
 
 A daily poem is just a click away in the lower left of your toolbar. Happy coding.
 
-![Poem of the Day Preview](https://github.com/darrenjaworski/poem-of-the-day-preview.png)
+![Poem of the Day Preview](https://raw.githubusercontent.com/darrenjaworski/poem-of-the-day/refs/heads/main/poem-of-the-day-preview.png)
 
 ## Requirements
 
