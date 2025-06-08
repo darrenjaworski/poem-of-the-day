@@ -8,7 +8,7 @@ A daily poem is just a click away in the lower left of your toolbar. Happy codin
 
 ## Requirements
 
-This extension has no dependencies in order to use this extension.
+This extension has no dependencies.
 
 ## Extension Settings
 
@@ -18,7 +18,7 @@ This extension contributes the following settings:
 
 ## Known Issues
 
-[Please report any bugs or issues on the extensions Github repo.](https://github.com/darrenjaworski/poem-of-the-day/issues/new)
+[Please report any bugs or issues on the extension's Github repo.](https://github.com/darrenjaworski/poem-of-the-day/issues/new)
 
 ## Release Notes
 
