@@ -2,7 +2,11 @@
   "name": "poem-of-the-day",
   "displayName": "Poem of the Day",
   "description": "An extension to provide you with a daily dose of poetry while you're coding.",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/darrenjaworski/poem-of-the-day.git"
+  },
   "engines": {
     "vscode": "^1.100.0"
   },
