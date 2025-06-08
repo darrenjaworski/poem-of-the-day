@@ -168,7 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(statusBarItem);
 
 	// Command to show the poem in a webview
-	let showPoemCommand = vscode.commands.registerCommand('poem-of-the-day.showDailyPoem', () => {
+	let showPoemCommand = vscode.commands.registerCommand('poem-of-the-day.showPoemOfTheDay', () => {
 		const columnToShowIn = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
 			: vscode.ViewColumn.One;
@@ -179,8 +179,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		} else {
 			// Otherwise, create a new panel
 			currentPoemPanel = vscode.window.createWebviewPanel(
-				'dailyPoetry', // Identifies the type of the webview. Used internally
-				'Daily Poem', // Title of the panel displayed to the user
+				'poemOfTheDay', // Identifies the type of the webview. Used internally
+				'Poem of the Day', // Title of the panel displayed to the user
 				columnToShowIn || vscode.ViewColumn.One, // Editor column to show the new webview panel in.
 				{} // Webview options. We don't need any special options for now.
 			);
@@ -209,14 +209,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	} else {
 		statusBarItem.tooltip = `${lastPoemData.title}\nBy: ${lastPoemData.author}\n(Click to view full poem)`;
 	}
-	statusBarItem.command = 'poem-of-the-day.showDailyPoem'; // Set command for status bar click
+	statusBarItem.command = 'poem-of-the-day.showPoemOfTheDay'; // Set command for status bar click
 
 	// Check user setting for opening webview on startup
 	const config = vscode.workspace.getConfiguration('dailyPoetry');
 	const openOnStartup = config.get<boolean>('openOnStartup');
 
 	if (openOnStartup) {
-		vscode.commands.executeCommand('poem-of-the-day.showDailyPoem');
+		vscode.commands.executeCommand('poem-of-the-day.showPoemOfTheDay');
 	}
 }
 
@@ -271,9 +271,9 @@ function getWebviewContent(): string {
 	} else if (lastPoemData && lastPoemData.error) {
 		htmlContent += `<h1 class="error">Error Fetching Poem</h1>
 					   <p class="error">${lastPoemData.error}</p>
-					   <h2>Default Poem:</h2>
+					   <h3>Oh no. Something went wrong. But alas we have a fallback poem.</h3>
 					   <h1>${defaultPoemForFallback.title}</h1>
-					   <h2>by ${defaultPoemForFallback.author}</h2>
+					   <h2>${defaultPoemForFallback.author}</h2>
 					   <pre>${defaultPoemForFallback.body}</pre>`;
 	} else {
 		// This case might occur if the command is somehow called before initial fetch completes

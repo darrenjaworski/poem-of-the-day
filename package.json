@@ -16,8 +16,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "poem-of-the-day.showDailyPoem",
-        "title": "Show Daily Poem"
+        "command": "poem-of-the-day.showPoemOfTheDAy",
+        "title": "Show Poem of the Day"
       }
     ],
     "configuration": {
