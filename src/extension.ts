@@ -281,7 +281,7 @@ function getWebviewContent(): string {
 	}
 	// htmlContent += `<hr>`; // Removed this line
 	htmlContent += `<p style="text-align:center; font-size: 0.8em; color: var(--vscode-descriptionForeground);">Developed with ❤️ by <a href="https://github.com/darrenjaworski" style="color: var(--vscode-textLink-foreground);">@darrenjaworski</a> and Copilot.</p>`;
-	htmlContent += `<p style="text-align:center; font-size: 0.75em; color: var(--vscode-descriptionForeground);">Poetry from <a href="https://poetrydb.org" style="color: var(--vscode-textLink-foreground);">PoetryDB</a>.</p>`;
+	htmlContent += `<p style="text-align:center; font-size: 0.75em; color: var(--vscode-descriptionForeground);">Poetry from <a href="https://poetrydb.org/index.html" style="color: var(--vscode-textLink-foreground);">PoetryDB</a>.</p>`;
 	htmlContent += '</body></html>';
 	return htmlContent;
 }
