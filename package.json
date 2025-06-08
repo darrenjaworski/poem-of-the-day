@@ -1,6 +1,6 @@
 {
-  "name": "daily-poetry",
-  "displayName": "daily-poetry",
+  "name": "poem-of-the-day",
+  "displayName": "poem-of-the-day",
   "description": "An extension to provide you with a daily dose of poetry while you're coding.",
   "version": "0.0.1",
   "engines": {
@@ -16,7 +16,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "daily-poetry.showDailyPoem",
+        "command": "poem-of-the-day.showDailyPoem",
         "title": "Show Daily Poem"
       }
     ],

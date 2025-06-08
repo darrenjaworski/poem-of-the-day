@@ -154,7 +154,7 @@ async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: bo
 
 
 export async function activate(context: vscode.ExtensionContext) {
-	console.log('Congratulations, your extension "daily-poetry" is now active!');
+	console.log('Congratulations, your extension "poem-of-the-day" is now active!');
 
 	const isDevelopmentMode = context.extensionMode === vscode.ExtensionMode.Development;
 	if (isDevelopmentMode) {
@@ -168,7 +168,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(statusBarItem);
 
 	// Command to show the poem in a webview
-	let showPoemCommand = vscode.commands.registerCommand('daily-poetry.showDailyPoem', () => {
+	let showPoemCommand = vscode.commands.registerCommand('poem-of-the-day.showDailyPoem', () => {
 		const columnToShowIn = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
 			: vscode.ViewColumn.One;
@@ -209,14 +209,14 @@ export async function activate(context: vscode.ExtensionContext) {
 	} else {
 		statusBarItem.tooltip = `${lastPoemData.title}\nBy: ${lastPoemData.author}\n(Click to view full poem)`;
 	}
-	statusBarItem.command = 'daily-poetry.showDailyPoem'; // Set command for status bar click
+	statusBarItem.command = 'poem-of-the-day.showDailyPoem'; // Set command for status bar click
 
 	// Check user setting for opening webview on startup
 	const config = vscode.workspace.getConfiguration('dailyPoetry');
 	const openOnStartup = config.get<boolean>('openOnStartup');
 
 	if (openOnStartup) {
-		vscode.commands.executeCommand('daily-poetry.showDailyPoem');
+		vscode.commands.executeCommand('poem-of-the-day.showDailyPoem');
 	}
 }
 

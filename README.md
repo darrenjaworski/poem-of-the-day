@@ -1,6 +1,6 @@
-# daily-poetry README
+# poem-of-the-day README
 
-This is the README for your extension "daily-poetry". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "poem-of-the-day". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

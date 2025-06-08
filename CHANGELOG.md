@@ -1,6 +1,6 @@
 # Change Log
 
-All notable changes to the "daily-poetry" extension will be documented in this file.
+All notable changes to the "poem-of-the-day" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
