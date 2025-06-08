@@ -1,5 +1,19 @@
 # Poem of the Day
 
+## Installation
+
+Install this extension from the [VS Code marketplace](https://marketplace.visualstudio.com/items?itemName=DarrenJaworski.poem-of-the-day).
+
+OR
+
+With VS Code open, search for `poem-of-the-day` in the extension panel (`Ctrl+Shift+X` on Windows/Linux or `Cmd(⌘)+Shift+X` on MacOS) and click install.
+
+OR
+
+With VS Code open, launch VS Code Quick Open (`Ctrl+P` on Windows/Linux or `Cmd(⌘)+P` on MacOS), paste the following command, and press enter.
+
+`ext install darrenjaworski.poem-of-the-day`
+
 ## Features
 
 A daily poem is just a click away in the lower left of your toolbar. Happy coding.
