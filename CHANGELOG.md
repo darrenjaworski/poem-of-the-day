@@ -4,6 +4,11 @@ All notable changes to the "poem-of-the-day" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [1.0.0]
 
-- Initial release
+- initial release!
+- a random poem fetched daily and cached locally from poetrydb.org
+- poetry displayed in webview
+- toolbar icon to show poem and shows title and author preview
+- command to show poem of the day
+- setting to automatically show poem of the day on startup (defaults to false)
