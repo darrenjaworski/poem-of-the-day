@@ -2,6 +2,7 @@
   "name": "poem-of-the-day",
   "displayName": "Poem of the Day",
   "description": "An extension to provide you with a daily dose of poetry while you're coding.",
+  "publisher": "darrenjaworski",
   "version": "1.0.0",
   "license": "MIT",
   "repository": {
