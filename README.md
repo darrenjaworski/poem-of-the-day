@@ -36,6 +36,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.1
+
+- updated readme
+- updated icon
+
 ### 1.0.0
 
 - initial release!

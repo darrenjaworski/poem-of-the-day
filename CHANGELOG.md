@@ -4,6 +4,11 @@ All notable changes to the "poem-of-the-day" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.0.1]
+
+- updated icon
+- updated readme
+
 ## [1.0.0]
 
 - initial release!
