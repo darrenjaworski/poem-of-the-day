@@ -40,6 +40,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.2
+
+- crop icon
+
 ### 1.0.1
 
 - updated readme
