@@ -172,10 +172,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		lastPoemData = poemData; // Update the global variable
 
 		if (poemData.error) {
-			statusBarItem.tooltip = `Error: ${poemData.error}\\nClick to view default poem.`;
+			statusBarItem.tooltip = `Error: ${poemData.error}\nClick to view default poem.`;
 			console.error(`Poem of the Day Extension: Error - ${poemData.error}`);
 		} else {
-			statusBarItem.tooltip = `${poemData.title}\\nBy: ${poemData.author}\\n(Click to view full poem)`;
+			statusBarItem.tooltip = `${poemData.title}\nBy: ${poemData.author}\n(Click to view full poem)`;
 			console.log(`Poem of the Day: Displaying poem - ${poemData.title}`);
 		}
 		statusBarItem.command = 'poem-of-the-day.showPoemOfTheDay'; // Ensure command is set
