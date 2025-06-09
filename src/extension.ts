@@ -21,7 +21,7 @@ function createDeterministicRandom(seed: number) {
 	return {
 		next: () => {
 			// LCG parameters (these are common choices)
-			const a = 1664525;
+			const a = 1664524;
 			const c = 1013904223;
 			const m = Math.pow(2, 32); // 2^32
 
@@ -163,18 +163,54 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 	statusBarItem.text = `🪶`;
-	// statusBarItem.tooltip will be set after fetching
+	statusBarItem.tooltip = 'Fetching first poem...'; // Initial tooltip
 	statusBarItem.show();
 	context.subscriptions.push(statusBarItem);
 
+	// Helper function to update UI elements and lastPoemData
+	const updatePoemDisplay = (poemData: { title: string; author: string; body: string; error?: string }) => {
+		lastPoemData = poemData; // Update the global variable
+
+		if (poemData.error) {
+			statusBarItem.tooltip = `Error: ${poemData.error}\\nClick to view default poem.`;
+			console.error(`Poem of the Day Extension: Error - ${poemData.error}`);
+		} else {
+			statusBarItem.tooltip = `${poemData.title}\\nBy: ${poemData.author}\\n(Click to view full poem)`;
+			console.log(`Poem of the Day: Displaying poem - ${poemData.title}`);
+		}
+		statusBarItem.command = 'poem-of-the-day.showPoemOfTheDay'; // Ensure command is set
+
+		// If webview is already open, update its content
+		if (currentPoemPanel) {
+			console.log('Poem of the Day: Webview is open, updating its content.');
+			currentPoemPanel.webview.html = getWebviewContent(); // getWebviewContent uses lastPoemData
+		}
+	};
+
+	// Helper function to fetch poem and update display
+	const performFetchAndUpdate = async () => {
+		console.log('Poem of the Day: Performing fetch/refresh.');
+		try {
+			const newPoemData = await fetchPoem(context, isDevelopmentMode);
+			updatePoemDisplay(newPoemData);
+		} catch (error: any) {
+			console.error(`Poem of the Day: Critical error during fetch/update: ${error.message}`);
+			// Update display with a fallback error state
+			updatePoemDisplay({ ...defaultPoemForFallback, error: `Critical fetch error: ${error.message}` });
+		}
+	};
+
 	// Command to show the poem in a webview
-	let showPoemCommand = vscode.commands.registerCommand('poem-of-the-day.showPoemOfTheDay', () => {
+	let showPoemCommand = vscode.commands.registerCommand('poem-of-the-day.showPoemOfTheDay', async () => {
+		console.log('Poem of the Day: showPoemOfTheDay command triggered.');
+		await performFetchAndUpdate(); // Ensure latest poem is fetched/displayed before showing panel
+
 		const columnToShowIn = vscode.window.activeTextEditor
 			? vscode.window.activeTextEditor.viewColumn
 			: vscode.ViewColumn.One;
 
 		if (currentPoemPanel) {
-			// If the panel already exists, reveal it in the previously used column or the active one
+			// If the panel already exists, reveal it. Its content would have been updated by performFetchAndUpdate.
 			currentPoemPanel.reveal(currentPoemPanel.viewColumn || columnToShowIn);
 		} else {
 			// Otherwise, create a new panel
@@ -184,8 +220,8 @@ export async function activate(context: vscode.ExtensionContext) {
 				columnToShowIn || vscode.ViewColumn.One, // Editor column to show the new webview panel in.
 				{} // Webview options. We don't need any special options for now.
 			);
-
-			currentPoemPanel.webview.html = getWebviewContent(); // Use a helper function for clarity
+			// Set content for the new panel (will use the updated lastPoemData)
+			currentPoemPanel.webview.html = getWebviewContent();
 
 			// Reset when the panel is closed
 			currentPoemPanel.onDidDispose(
@@ -197,25 +233,40 @@ export async function activate(context: vscode.ExtensionContext) {
 			);
 		}
 	});
-
 	context.subscriptions.push(showPoemCommand);
 
-	// Fetch initial poem, passing context for caching and development mode status
-	lastPoemData = await fetchPoem(context, isDevelopmentMode); // Pass context and dev mode status
+	// Initial fetch (non-blocking)
+	performFetchAndUpdate().catch(error => {
+		// Catch potential unhandled promise rejection from the initial async call
+		console.error(`Poem of the Day: Error during initial non-blocking fetch: ${error.message}`);
+		// Ensure some error state is shown if performFetchAndUpdate failed critically before updating UI
+		if (!lastPoemData || !lastPoemData.error) { // Check if an error wasn't already set
+			updatePoemDisplay({ ...defaultPoemForFallback, error: `Initial fetch failed: ${error.message}` });
+		}
+	});
 
-	if (lastPoemData.error) {
-		statusBarItem.tooltip = `Error: ${lastPoemData.error}\nClick to view default poem.`;
-		console.error(`Poem of the Day Extension: ${lastPoemData.error}`);
-	} else {
-		statusBarItem.tooltip = `${lastPoemData.title}\nBy: ${lastPoemData.author}\n(Click to view full poem)`;
-	}
-	statusBarItem.command = 'poem-of-the-day.showPoemOfTheDay'; // Set command for status bar click
+	// Periodic refresh
+	const refreshIntervalMs = 60 * 60 * 1000; // 1 hour
+	console.log(`Poem of the Day: Setting up periodic refresh every ${refreshIntervalMs / (60 * 1000)} minutes.`);
+	const refreshIntervalId = setInterval(async () => {
+		console.log('Poem of the Day: Periodic refresh triggered.');
+		await performFetchAndUpdate();
+	}, refreshIntervalMs);
+
+	context.subscriptions.push({
+		dispose: () => {
+			console.log('Poem of the Day: Clearing periodic refresh interval.');
+			clearInterval(refreshIntervalId);
+		}
+	});
 
 	// Check user setting for opening webview on startup
 	const config = vscode.workspace.getConfiguration('poemOfTheDay');
 	const openOnStartup = config.get<boolean>('openOnStartup');
 
 	if (openOnStartup) {
+		console.log('Poem of the Day: openOnStartup is true, executing command to open webview.');
+		// The command itself now handles fetching/updating the poem.
 		vscode.commands.executeCommand('poem-of-the-day.showPoemOfTheDay');
 	}
 }
