@@ -40,6 +40,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.3
+
+- fix fetch new poem every day
+
 ### 1.0.2
 
 - crop icon
