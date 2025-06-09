@@ -31,30 +31,12 @@ function createDeterministicRandom(seed: number) {
 	};
 }
 
-async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: boolean): Promise<{ title: string; author: string; body: string; error?: string }> {
+async function fetchPoem(): Promise<{ title: string; author: string; body: string; error?: string }> {
 	const today = new Date();
 	const year = today.getFullYear();
 	const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Month is 0-indexed, pad with 0
 	const day = today.getDate().toString().padStart(2, '0'); // Pad with 0
 	const currentDateString = `${year}${month}${day}`; // YYYYMMDD
-
-	const cacheKey = 'dailyPoemCache';
-
-	if (!isDevelopmentMode) {
-		try {
-			const cachedItem = context.globalState.get<{ date: string; poem: { title: string; author: string; body: string; error?: undefined } }>(cacheKey);
-
-			if (cachedItem && cachedItem.date === currentDateString && cachedItem.poem && !cachedItem.poem.error) {
-				console.log('Poem of the Day: Serving poem from cache for date:', currentDateString);
-				return cachedItem.poem;
-			}
-		} catch (e) {
-			console.error('Poem of the Day: Error reading from cache', e);
-			// Proceed to fetch if cache read fails
-		}
-	} else {
-		console.log('Poem of the Day: Development mode - Bypassing cache read.');
-	}
 
 	console.log('Poem of the Day: Fetching new poem for date:', currentDateString);
 
@@ -132,17 +114,6 @@ async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: bo
 			body: processedBody // Use the processed body
 		};
 
-		// Store successfully fetched poem in cache only if not in development mode
-		if (!isDevelopmentMode) {
-			try {
-				await context.globalState.update(cacheKey, { date: currentDateString, poem: fetchedPoem });
-				console.log('Poem of the Day: Successfully cached poem for date:', currentDateString);
-			} catch (e) {
-				console.error('Poem of the Day: Error writing to cache', e);
-			}
-		} else {
-			console.log('Poem of the Day: Development mode - Bypassing cache write.');
-		}
 		return fetchedPoem;
 
 	} catch (e: any) {
@@ -155,11 +126,6 @@ async function fetchPoem(context: vscode.ExtensionContext, isDevelopmentMode: bo
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "poem-of-the-day" is now active!');
-
-	const isDevelopmentMode = context.extensionMode === vscode.ExtensionMode.Development;
-	if (isDevelopmentMode) {
-		console.log('Poem of the Day: Running in Development Mode - Caching is disabled for this session.');
-	}
 
 	const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
 	statusBarItem.text = `🪶`;
@@ -191,7 +157,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	const performFetchAndUpdate = async () => {
 		console.log('Poem of the Day: Performing fetch/refresh.');
 		try {
-			const newPoemData = await fetchPoem(context, isDevelopmentMode);
+			const newPoemData = await fetchPoem(); // Removed isDevelopmentMode from call
 			updatePoemDisplay(newPoemData);
 		} catch (error: any) {
 			console.error(`Poem of the Day: Critical error during fetch/update: ${error.message}`);
@@ -250,7 +216,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	console.log(`Poem of the Day: Setting up periodic refresh every ${refreshIntervalMs / (60 * 1000)} minutes.`);
 	const refreshIntervalId = setInterval(async () => {
 		console.log('Poem of the Day: Periodic refresh triggered.');
-		await performFetchAndUpdate();
+		await performFetchAndUpdate(); // Call already updated by performFetchAndUpdate definition
 	}, refreshIntervalMs);
 
 	context.subscriptions.push({
