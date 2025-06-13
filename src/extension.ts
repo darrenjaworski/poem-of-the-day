@@ -21,7 +21,7 @@ function createDeterministicRandom(seed: number) {
 	return {
 		next: () => {
 			// LCG parameters (these are common choices)
-			const a = 1664524;
+			const a = 1664525; // Corrected LCG parameter
 			const c = 1013904223;
 			const m = Math.pow(2, 32); // 2^32
 
@@ -29,6 +29,16 @@ function createDeterministicRandom(seed: number) {
 			return state / m; // Return a value between 0 (inclusive) and 1 (exclusive)
 		}
 	};
+}
+
+// Helper function to shuffle an array in place using a PRNG (Fisher-Yates algorithm)
+function shuffleArray<T>(array: T[], prng: { next: () => number }): T[] {
+	const result = [...array]; // Create a copy to avoid modifying the original array if it's used elsewhere
+	for (let i = result.length - 1; i > 0; i--) {
+		const j = Math.floor(prng.next() * (i + 1));
+		[result[i], result[j]] = [result[j], result[i]]; // Swap elements
+	}
+	return result;
 }
 
 async function fetchPoem(): Promise<{ title: string; author: string; body: string; error?: string }> {
@@ -79,11 +89,13 @@ async function fetchPoem(): Promise<{ title: string; author: string; body: strin
 		}
 		const authors = authorsResponse.authors;
 
-		// 2. Select random author using the deterministic PRNG
-		const authorIndex = Math.floor(prng.next() * authors.length);
-		const randomAuthorName = authors[authorIndex];
+		// 2. Shuffle authors and select one
+		// Use the PRNG to shuffle the list of authors for the current day
+		const shuffledAuthors = shuffleArray(authors, prng);
+		const randomAuthorName = shuffledAuthors.length > 0 ? shuffledAuthors[0] : null; // Pick the first author
+
 		if (!randomAuthorName) {
-			return { ...defaultPoemForFallback, error: "Could not select a random author." };
+			return { ...defaultPoemForFallback, error: "Could not select a random author after shuffling." };
 		}
 
 		// 3. Fetch poems for the selected author
