@@ -46,7 +46,7 @@ This extension contributes the following settings:
 
 ### 1.0.4
 
-- remove caching
+- fix: remove caching
 
 ### 1.0.3
 
@@ -54,18 +54,18 @@ This extension contributes the following settings:
 
 ### 1.0.2
 
-- crop icon
+- fix: crop icon
 
 ### 1.0.1
 
-- updated readme
-- updated icon
+- chore: updated icon
+- chore: updated readme
 
 ### 1.0.0
 
 - initial release!
-- a random poem fetched daily and cached locally from poetrydb.org
-- poetry displayed in webview
-- toolbar icon to show poem and shows title and author preview
-- command to show poem of the day
-- setting to automatically show poem of the day on startup (defaults to false)
+- feat: a random poem fetched daily and cached locally from poetrydb.org
+- feat: poetry displayed in webview
+- feat: toolbar icon to show poem and shows title and author preview
+- feat: command to show poem of the day
+- feat: setting to automatically show poem of the day on startup (defaults to false)
