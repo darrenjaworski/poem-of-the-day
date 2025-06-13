@@ -40,6 +40,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.5
+
+- random author each day
+
 ### 1.0.4
 
 - remove caching
