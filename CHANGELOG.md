@@ -4,6 +4,10 @@ All notable changes to the "poem-of-the-day" extension will be documented in thi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.0.7]
+
+- fix: typo on footer
+
 ## [1.0.6]
 
 - chore: update readme

@@ -48,6 +48,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.7
+
+- fix: typo on footer
+
 ### 1.0.6
 
 - chore: update readme
