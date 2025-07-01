@@ -36,7 +36,7 @@ This extension has no dependencies.
 
 This extension contributes the following settings:
 
-* `poemOfTheDay.openOnStartup`: On VS Code startup, the poem of the day will be displayed. (defaults to false)
+- `poemOfTheDay.openOnStartup`: On VS Code startup, the poem of the day will be displayed. (defaults to false)
 
 ## Commands
 
@@ -47,6 +47,10 @@ This extension contributes the following settings:
 [Please report any bugs or issues on the extension's Github repo.](https://github.com/darrenjaworski/poem-of-the-day/issues/new)
 
 ## Release Notes
+
+### 1.0.6
+
+- chore: update readme
 
 ### 1.0.5
 
