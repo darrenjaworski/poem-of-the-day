@@ -34,6 +34,10 @@ This extension contributes the following settings:
 
 * `poemOfTheDay.openOnStartup`: On VS Code startup, the poem of the day will be displayed. (defaults to false)
 
+## Commands
+
+- **Show Poem of the Day** (`poem-of-the-day.showPoemOfTheDay`): Opens the Poem of the Day in a webview panel.
+
 ## Known Issues
 
 [Please report any bugs or issues on the extension's Github repo.](https://github.com/darrenjaworski/poem-of-the-day/issues/new)
