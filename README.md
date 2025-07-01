@@ -75,7 +75,6 @@ This extension contributes the following settings:
 
 ### 1.0.0
 
-- initial release!
 - feat: a random poem fetched daily and cached locally from poetrydb.org
 - feat: poetry displayed in webview
 - feat: toolbar icon to show poem and shows title and author preview
