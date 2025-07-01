@@ -1,5 +1,9 @@
 # Poem of the Day
 
+An extension to provide you with a daily dose of poetry while you're coding.
+
+---
+
 [![Visual Studio Marketplace Version](https://img.shields.io/visual-studio-marketplace/v/darrenjaworski.poem-of-the-day?color=blue&logo=visual-studio)](https://marketplace.visualstudio.com/items?itemName=darrenjaworski.poem-of-the-day&WT.mc_id=darrenjaworski)
 [![Visual Studio Marketplace Installs](https://img.shields.io/visual-studio-marketplace/i/darrenjaworski.poem-of-the-day?logo=visualstudio)](https://marketplace.visualstudio.com/items?itemName=darrenjaworski.poem-of-the-day&WT.mc_id=darrenjaworski)
 [![Visual Studio Marketplace Downloads](https://img.shields.io/visual-studio-marketplace/d/darrenjaworski.poem-of-the-day?logo=visualstudio)](https://marketplace.visualstudio.com/items?itemName=darrenjaworski.poem-of-the-day&WT.mc_id=darrenjaworski)
