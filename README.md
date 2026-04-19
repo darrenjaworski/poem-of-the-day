@@ -48,6 +48,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.8
+
+- chore: minor/patch dependency updates
+- chore: add vsce package script
+
 ### 1.0.7
 
 - fix: typo on footer
