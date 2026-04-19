@@ -15,6 +15,7 @@ npm run package       # Production build (minified)
 npm run lint          # ESLint on src/
 npm run check-types   # TypeScript type-check only
 npm test              # Run VS Code extension tests
+npm run vsce:package  # Build and package .vsix
 ```
 
 To develop: open in VS Code and press F5 to launch the Extension Development Host (uses `.vscode/launch.json`, which runs `npm run watch` as a pre-launch task).
